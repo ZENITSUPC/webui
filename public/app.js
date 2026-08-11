@@ -1,6 +1,6 @@
 /* ==========================================================================
    Antigravity Agentic Studio - Client Engine (app.js)
-   Gemini 3 Flash Live Engine & Closed-Canvas-by-Default Control
+   Autocomplete Popover Fixes, Drawer Backdrop & Clean SVG/FontAwesome Icons
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendBtn = document.getElementById('send-btn');
   const micBtn = document.getElementById('mic-btn');
 
+  // Autocomplete Popover Elements
+  const commandsPopover = document.getElementById('commands-popover');
+  const commandsList = document.getElementById('commands-list');
+
   // Navbar Controls
   const voiceModeBtn = document.getElementById('voice-mode-btn');
   const subagentDrawerBtn = document.getElementById('subagent-drawer-btn');
@@ -20,6 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const subagentCoresContainer = document.getElementById('subagent-cores-container');
   const qrModalBtn = document.getElementById('qr-modal-btn');
   const clearChatBtn = document.getElementById('clear-chat-btn');
+  const historyDrawerBtn = document.getElementById('history-drawer-btn');
+  const historyDrawer = document.getElementById('history-drawer');
+  const closeHistoryDrawerBtn = document.getElementById('close-history-drawer-btn');
+
+  // Backdrop Overlay
+  const drawerBackdrop = document.getElementById('drawer-backdrop');
 
   // Mobile Viewport Switcher Buttons
   const mobileTabChat = document.getElementById('mobile-tab-chat');
@@ -68,13 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const voiceUserTranscript = document.getElementById('voice-user-transcript');
   const voiceAiTranscript = document.getElementById('voice-ai-transcript');
 
-  // State (Canvas CLOSED by default upon page load)
+  // State
   let currentConversationId = '';
   let activeTaskId = '';
   let activeEventSource = null;
   let isGenerating = false;
   let allLoadedSkills = [];
-  let isCanvasOpen = false; // Closed on load as requested
+  let isCanvasOpen = false;
 
   // Voice State
   let speechRecognition = null;
@@ -83,6 +93,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let liveMicActive = true;
   let liveSpeakerActive = true;
 
+  // Default System Commands List
+  const defaultCommands = [
+    { name: '/clear', desc: 'Limpiar consola y empezar nuevo chat', prompt: '/clear' },
+    { name: '/captura', desc: 'Analizar la última captura de pantalla', prompt: 'Ejecuta la habilidad captura' },
+    { name: '/clip', desc: 'Leer contenido del portapapeles', prompt: 'Ejecuta la habilidad clip' },
+    { name: '/frontend-design', desc: 'Activar guía de diseño frontend', prompt: 'Activa la guía de diseño frontend' },
+    { name: '/subagents', desc: 'Desplegar subagentes en paralelo', prompt: 'Invoca subagentes en paralelo' }
+  ];
+
   // Initialize Mermaid.js
   if (window.mermaid) {
     try {
@@ -90,6 +109,30 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       console.warn('Mermaid.js init error:', e);
     }
+  }
+
+  // Backdrop Manager
+  function updateBackdropState() {
+    const isSidebarOpen = sidebar && !sidebar.classList.contains('collapsed');
+    const isTasksOpen = tasksDrawer && !tasksDrawer.classList.contains('collapsed');
+    const isHistoryOpen = historyDrawer && !historyDrawer.classList.contains('collapsed');
+
+    if (drawerBackdrop) {
+      if (isSidebarOpen || isTasksOpen || isHistoryOpen) {
+        drawerBackdrop.classList.remove('hidden');
+      } else {
+        drawerBackdrop.classList.add('hidden');
+      }
+    }
+  }
+
+  if (drawerBackdrop) {
+    drawerBackdrop.addEventListener('click', () => {
+      if (sidebar) sidebar.classList.add('collapsed');
+      if (tasksDrawer) tasksDrawer.classList.add('collapsed');
+      if (historyDrawer) historyDrawer.classList.add('collapsed');
+      updateBackdropState();
+    });
   }
 
   // Mobile View Switcher Function
@@ -110,9 +153,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (viewName === 'tools') {
       if (sidebar) sidebar.classList.remove('collapsed');
     }
+    updateBackdropState();
   };
 
-  // Dual-Pane Canvas Toggle (Closed on startup)
+  // Dual-Pane Canvas Toggle
   window.toggleCanvasPanel = function() {
     isCanvasOpen = !isCanvasOpen;
     if (splitWorkspace) splitWorkspace.classList.toggle('canvas-open', isCanvasOpen);
@@ -133,6 +177,54 @@ document.addEventListener('DOMContentLoaded', () => {
     if (targetTab) targetTab.classList.add('active');
     if (targetView) targetView.classList.add('active');
   };
+
+  // Autocomplete Popover Logic for '/' Trigger
+  function handleAutocomplete() {
+    if (!promptInput || !commandsPopover || !commandsList) return;
+    const value = promptInput.value;
+
+    if (value.startsWith('/')) {
+      const filter = value.substring(1).toLowerCase().trim();
+      
+      // Combine default commands and loaded skills
+      const allCommands = [
+        ...defaultCommands,
+        ...allLoadedSkills.map(s => ({
+          name: `/${s.name}`,
+          desc: s.description,
+          prompt: `Usa la habilidad ${s.name} para ejecutar esta tarea`
+        }))
+      ];
+
+      const matches = allCommands.filter(c =>
+        c.name.toLowerCase().includes(filter) || c.desc.toLowerCase().includes(filter)
+      );
+
+      if (matches.length > 0) {
+        commandsList.innerHTML = matches.map(c => `
+          <div class="command-item touch-target" onclick="selectCommand('${escapeHtml(c.prompt)}')">
+            <div class="command-title"><i class="fa-solid fa-terminal"></i> ${escapeHtml(c.name)}</div>
+            <div class="command-desc">${escapeHtml(c.desc)}</div>
+          </div>
+        `).join('');
+        commandsPopover.classList.remove('hidden');
+      } else {
+        commandsPopover.classList.add('hidden');
+      }
+    } else {
+      commandsPopover.classList.add('hidden');
+    }
+  }
+
+  window.selectCommand = function(promptText) {
+    if (promptInput) promptInput.value = promptText;
+    if (commandsPopover) commandsPopover.classList.add('hidden');
+    promptInput.focus();
+  };
+
+  if (promptInput) {
+    promptInput.addEventListener('input', handleAutocomplete);
+  }
 
   // Quick Skill Triggers Deck Handler
   window.sendQuickTrigger = function(triggerType) {
@@ -342,23 +434,49 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleSidebarBtn.addEventListener('click', () => {
       if (sidebar) sidebar.classList.toggle('collapsed');
       if (tasksDrawer) tasksDrawer.classList.add('collapsed');
+      if (historyDrawer) historyDrawer.classList.add('collapsed');
+      updateBackdropState();
     });
   }
 
   if (closeSidebarBtn && sidebar) {
-    closeSidebarBtn.addEventListener('click', () => sidebar.classList.add('collapsed'));
+    closeSidebarBtn.addEventListener('click', () => {
+      sidebar.classList.add('collapsed');
+      updateBackdropState();
+    });
   }
 
   if (subagentDrawerBtn) {
     subagentDrawerBtn.addEventListener('click', () => {
       if (tasksDrawer) tasksDrawer.classList.toggle('collapsed');
       if (sidebar) sidebar.classList.add('collapsed');
+      if (historyDrawer) historyDrawer.classList.add('collapsed');
       loadActiveTasks();
+      updateBackdropState();
     });
   }
 
   if (closeTasksDrawerBtn && tasksDrawer) {
-    closeTasksDrawerBtn.addEventListener('click', () => tasksDrawer.classList.add('collapsed'));
+    closeTasksDrawerBtn.addEventListener('click', () => {
+      tasksDrawer.classList.add('collapsed');
+      updateBackdropState();
+    });
+  }
+
+  if (historyDrawerBtn) {
+    historyDrawerBtn.addEventListener('click', () => {
+      if (historyDrawer) historyDrawer.classList.toggle('collapsed');
+      if (sidebar) sidebar.classList.add('collapsed');
+      if (tasksDrawer) tasksDrawer.classList.add('collapsed');
+      updateBackdropState();
+    });
+  }
+
+  if (closeHistoryDrawerBtn && historyDrawer) {
+    closeHistoryDrawerBtn.addEventListener('click', () => {
+      historyDrawer.classList.add('collapsed');
+      updateBackdropState();
+    });
   }
 
   window.sendPresetPrompt = function(text) {
@@ -491,6 +609,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = promptInput.value.trim();
     if (!text || isGenerating) return;
 
+    if (commandsPopover) commandsPopover.classList.add('hidden');
     if (welcomeHero) welcomeHero.style.display = 'none';
 
     appendMessage('user', text);
@@ -606,7 +725,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Gemini 3 Flash Live Speech Recognition (STT)
+  // Gemini 3 Flash Live Speech Recognition
   if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     speechRecognition = new SpeechRecognition();
@@ -634,7 +753,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isGeminiLiveMode && voiceUserTranscript && voiceUserTranscript.textContent && voiceUserTranscript.textContent !== 'Escuchando...') {
         if (promptInput) promptInput.value = voiceUserTranscript.textContent;
         sendMessage();
-        voiceUserTranscript.textContent = 'Procesando respuesta en Gemini 3 Flash Live...';
+        voiceUserTranscript.textContent = 'Procesando en Gemini 3 Flash Live...';
       }
     };
 
