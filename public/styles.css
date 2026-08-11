@@ -1,6 +1,6 @@
 /* ==========================================================================
-   Antigravity Agentic Studio - Clean Minimalist Studio System
-   Centered Ergonomic Layout, Micro-Pills & Warm Non-Fatiguing UI
+   Antigravity Agentic Studio - Clean Mobile & Autocomplete CSS Fixes
+   Opaque Drawer Backdrops, Zero Text Collisions & Crisp SVG Icons
    ========================================================================== */
 
 :root {
@@ -72,6 +72,23 @@ body {
 
 .show-mobile { display: none !important; }
 .hide-mobile { display: flex !important; }
+
+/* Backdrop Blur Overlay for Open Drawers */
+.drawer-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10, 8, 6, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 110;
+  transition: opacity 0.25s ease;
+}
+
+.drawer-backdrop.hidden {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+}
 
 .app-container {
   display: flex;
@@ -208,7 +225,7 @@ body {
   background: currentColor;
 }
 
-/* Buttons & Micro-Interactions */
+/* Buttons */
 .warm-btn {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -533,7 +550,7 @@ body {
   outline: none;
 }
 
-/* Chat Input & Skill Quick-Triggers Bar Deck */
+/* Chat Input Area & Autocomplete Popover Fixes */
 .chat-input-area {
   padding: 12px 16px 16px;
   background: var(--bg-dark);
@@ -573,9 +590,84 @@ body {
   color: var(--accent-sand);
 }
 
-.input-warm-container {
+.input-warm-wrapper {
+  position: relative;
   max-width: 800px;
   margin: 0 auto;
+}
+
+/* '/' Autocomplete Popover Menu Fixes */
+.commands-popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius-md);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.85);
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 250;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.commands-popover.hidden {
+  display: none !important;
+}
+
+.popover-header {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent-copper);
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.5px;
+}
+
+.command-item {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: background 0.15s ease;
+  background: var(--bg-card);
+  border: 1px solid transparent;
+}
+
+.command-item:hover, .command-item.selected {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+}
+
+.command-title {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent-copper);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.command-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.input-warm-container {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -789,7 +881,6 @@ input:checked + .slider:before {
   gap: 16px;
 }
 
-/* Minimalist Welcome Hero */
 .welcome-hero {
   max-width: 640px;
   margin: 40px auto;
@@ -987,7 +1078,7 @@ input:checked + .slider:before {
 .voice-ctrl-btn.stop { background: var(--accent-rose); color: #fff; border: none; }
 
 /* Modals */
-.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 250; }
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 250; }
 .modal-overlay.active { display: flex; }
 .modal-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); width: 92%; max-width: 440px; padding: 18px; }
 
@@ -1024,6 +1115,7 @@ input:checked + .slider:before {
     position: fixed;
     top: 0; bottom: 0;
     height: 100vh;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
   }
 
   .welcome-hero h2 { font-size: 22px; }
