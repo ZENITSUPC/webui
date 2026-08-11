@@ -1,0 +1,21 @@
+{
+  "name": "antigravity-webui",
+  "version": "1.2.0",
+  "description": "Antigravity Local Web Interface & Voice Platform for Termux / Linux",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "antigravity",
+    "agy",
+    "agentic-ai",
+    "web-ui",
+    "voice-assistant",
+    "termux"
+  ],
+  "author": "Antigravity Lead AI Engineer",
+  "license": "MIT",
+  "dependencies": {}
+}

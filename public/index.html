@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Antigravity Studio | Gemini 3 Flash Live</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Highlight.js Theme -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/panda-syntax-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+  <!-- Marked.js Markdown Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Mermaid.js for Diagram Rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+  <!-- Application Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- Top Studio Navbar -->
+    <header class="navbar">
+      <div class="navbar-left">
+        <button id="toggle-sidebar-btn" class="warm-btn touch-target" title="Panel de Habilidades">
+          <i class="fa-solid fa-box-archive"></i> <span class="hide-mobile">Habilidades</span>
+        </button>
+
+        <div class="brand">
+          <div class="logo-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Antigravity <span class="badge-tag">3 FLASH LIVE</span></span>
+            <span class="brand-status" id="server-status-pill">
+              <span class="status-dot online"></span>
+              <span id="model-name-text">Gemini 3 Flash Live</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subagent HUD Cluster Widget -->
+      <div id="subagent-hud-cluster" class="subagent-hud-cluster hide-mobile">
+        <div class="hud-title"><i class="fa-solid fa-microchip"></i> CORES:</div>
+        <div id="subagent-cores-container" class="cores-container">
+          <div class="core-node idle"><span class="core-dot"></span> Core_01 [IDLE]</div>
+        </div>
+      </div>
+
+      <div class="navbar-actions">
+        <!-- Canvas Toggle Button -->
+        <button id="toggle-canvas-btn" class="warm-btn touch-target" title="Abrir/Cerrar El Canvas Vivo">
+          <i class="fa-solid fa-table-columns"></i> <span class="hide-mobile">Canvas Vivo</span>
+        </button>
+
+        <!-- Gemini 3 Flash Live Voice Mode -->
+        <button id="voice-mode-btn" class="voice-pill-btn touch-target" title="Activar Gemini 3 Flash Live Mode">
+          <i class="fa-solid fa-headset"></i>
+          <span class="hide-mobile">Gemini 3 Flash Live</span>
+        </button>
+
+        <!-- Network Access Modal Button -->
+        <button id="qr-modal-btn" class="warm-btn icon-only touch-target" title="Conexión Móvil / QR">
+          <i class="fa-solid fa-qrcode"></i>
+        </button>
+
+        <!-- Clear Chat Button -->
+        <button id="clear-chat-btn" class="warm-btn danger icon-only touch-target" title="Limpiar consola">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Viewport Switcher Bar -->
+    <div class="mobile-viewport-switcher show-mobile">
+      <button id="mobile-tab-chat" class="mobile-switch-btn active" onclick="switchMobileView('chat')">
+        <i class="fa-solid fa-comments"></i> Consola
+      </button>
+      <button id="mobile-tab-canvas" class="mobile-switch-btn" onclick="switchMobileView('canvas')">
+        <i class="fa-solid fa-palette"></i> Canvas Vivo
+      </button>
+      <button id="mobile-tab-tools" class="mobile-switch-btn" onclick="switchMobileView('tools')">
+        <i class="fa-solid fa-sliders"></i> Herramientas
+      </button>
+    </div>
+
+    <!-- Workspace Layout (Starts CLOSED by default) -->
+    <div id="split-workspace" class="split-workspace">
+
+      <!-- LEFT PANEL: Chat, Consola & Telemetría -->
+      <section id="chat-panel" class="workspace-panel chat-panel active-mobile-view">
+        
+        <!-- Sidebar Drawer (Skills & Settings) -->
+        <aside id="sidebar" class="sidebar collapsed">
+          <div class="drawer-header">
+            <h3><i class="fa-solid fa-box-archive"></i> Registro de Habilidades</h3>
+            <button id="close-sidebar-btn" class="warm-btn sm icon-only touch-target"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+
+          <div class="drawer-content">
+            <div class="search-box">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+              <input type="text" id="skills-filter-input" placeholder="Buscar habilidades..." />
+            </div>
+
+            <div class="skills-section">
+              <div class="section-label">Habilidades disponibles (.agents/skills)</div>
+              <div id="skills-list" class="skills-grid">
+                <div class="skill-skeleton"><i class="fa-solid fa-spinner fa-spin"></i> Cargando habilidades...</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="settings-section">
+              <h3><i class="fa-solid fa-sliders"></i> Preferencias del Estudio</h3>
+
+              <label class="toggle-control touch-target">
+                <span><i class="fa-solid fa-volume-low"></i> Lectura por voz (TTS)</span>
+                <input type="checkbox" id="auto-tts-toggle">
+                <span class="slider"></span>
+              </label>
+
+              <label class="toggle-control touch-target">
+                <span><i class="fa-solid fa-arrow-down-short-wide"></i> Auto-scroll en consola</span>
+                <input type="checkbox" id="auto-scroll-toggle" checked>
+                <span class="slider"></span>
+              </label>
+
+              <label class="toggle-control touch-target">
+                <span><i class="fa-solid fa-brain"></i> Expandir razonamiento</span>
+                <input type="checkbox" id="expand-thinking-toggle">
+                <span class="slider"></span>
+              </label>
+
+              <label class="toggle-control touch-target">
+                <span><i class="fa-solid fa-bell"></i> Sonidos de estado</span>
+                <input type="checkbox" id="sound-fx-toggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Chat Output Messages Stream -->
+        <div id="chat-messages" class="chat-messages">
+
+          <!-- Clean Minimalist Welcome Banner -->
+          <div id="welcome-hero" class="welcome-hero">
+            <div class="hero-badge">
+              <i class="fa-solid fa-sparkles"></i> GEMINI 3 FLASH LIVE
+            </div>
+            <h2>Antigravity Studio</h2>
+            <p class="hero-subtitle">¿En qué puedo ayudarte hoy?</p>
+
+            <div class="hero-suggestions">
+              <button class="suggestion-chip touch-target" onclick="sendPresetPrompt('Construye una pagina web interactiva HTML/CSS/JS con un temporizador Pomodoro')">
+                <i class="fa-solid fa-code"></i> Crear App Web
+              </button>
+              <button class="suggestion-chip touch-target" onclick="sendPresetPrompt('Crea un diagrama Mermaid sobre la arquitectura del proyecto')">
+                <i class="fa-solid fa-diagram-project"></i> Diagrama Mermaid
+              </button>
+              <button class="suggestion-chip touch-target" onclick="sendPresetPrompt('Invoca subagentes en paralelo para auditar el proyecto')">
+                <i class="fa-solid fa-sitemap"></i> Subagentes
+              </button>
+              <button class="suggestion-chip touch-target" onclick="sendPresetPrompt('Inspecciona los archivos del proyecto actual')">
+                <i class="fa-solid fa-folder-tree"></i> Auditar Proyecto
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Input Section with Quick Skill Triggers Deck -->
+        <footer class="chat-input-area">
+          
+          <!-- Skill Quick-Triggers Bar Deck -->
+          <div class="skill-triggers-deck">
+            <button class="trigger-pill touch-target" onclick="sendQuickTrigger('captura')">
+              <i class="fa-solid fa-camera"></i> [Captura Android]
+            </button>
+            <button class="trigger-pill touch-target" onclick="sendQuickTrigger('clip')">
+              <i class="fa-solid fa-clipboard"></i> [Portapapeles]
+            </button>
+            <button class="trigger-pill touch-target" onclick="sendQuickTrigger('frontend-design')">
+              <i class="fa-solid fa-palette"></i> [Frontend Design]
+            </button>
+            <button class="trigger-pill touch-target" onclick="sendQuickTrigger('subagents')">
+              <i class="fa-solid fa-network-wired"></i> [Subagentes Paralelos]
+            </button>
+          </div>
+
+          <div class="input-warm-container">
+            <!-- Voice Dictation Button -->
+            <button id="mic-btn" class="input-action-btn mic touch-target" title="Dictar por micrófono">
+              <i class="fa-solid fa-microphone"></i>
+            </button>
+
+            <!-- Textarea Prompt Input -->
+            <textarea id="prompt-input" placeholder="Escribe tu consulta o instrucción..." rows="1"></textarea>
+
+            <!-- Send Action Button -->
+            <button id="send-btn" class="input-action-btn send touch-target" title="Enviar instrucción">
+              <span>Enviar</span> <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
+
+          <div class="input-footer-note">
+            <span><i class="fa-solid fa-shield"></i> Permisos Activos</span>
+            <span><i class="fa-solid fa-bolt"></i> Gemini 3 Flash Live API</span>
+            <span><i class="fa-solid fa-wifi"></i> SSE Stream</span>
+          </div>
+        </footer>
+      </section>
+
+      <!-- SPLITTER RESIZER BAR -->
+      <div id="split-resizer" class="split-resizer hide-mobile" title="Arrastrar para ajustar tamaño">
+        <div class="resizer-handle"></div>
+      </div>
+
+      <!-- RIGHT PANEL: EL CANVAS VIVO INTERACTIVO (Inicia cerrado por defecto) -->
+      <section id="canvas-panel" class="workspace-panel canvas-panel">
+        
+        <!-- Canvas Tabs Navigation Header -->
+        <div class="canvas-header">
+          <div class="canvas-tabs">
+            <button id="tab-btn-iframe" class="canvas-tab active touch-target" onclick="switchCanvasTab('iframe')">
+              <i class="fa-solid fa-globe"></i> <span>Web Sandbox</span>
+            </button>
+            <button id="tab-btn-mermaid" class="canvas-tab touch-target" onclick="switchCanvasTab('mermaid')">
+              <i class="fa-solid fa-diagram-project"></i> <span>Mermaid</span>
+            </button>
+            <button id="tab-btn-diff" class="canvas-tab touch-target" onclick="switchCanvasTab('diff')">
+              <i class="fa-solid fa-file-code"></i> <span>Archivos</span>
+            </button>
+            <button id="tab-btn-terminal" class="canvas-tab touch-target" onclick="switchCanvasTab('terminal')">
+              <i class="fa-solid fa-terminal"></i> <span>Terminal</span>
+            </button>
+          </div>
+
+          <div class="canvas-actions">
+            <button class="warm-btn sm touch-target" onclick="refreshIframeSandbox()" title="Recargar App Web">
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
+            <button class="warm-btn sm icon-only touch-target" onclick="toggleCanvasPanel()" title="Cerrar Canvas">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Canvas Body Views Container -->
+        <div class="canvas-body">
+
+          <!-- TAB 1: Iframe Sandbox (Live Web Preview) -->
+          <div id="canvas-view-iframe" class="canvas-view active">
+            <div class="iframe-container">
+              <iframe id="sandbox-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+            </div>
+          </div>
+
+          <!-- TAB 2: Mermaid Diagram Visualizer -->
+          <div id="canvas-view-mermaid" class="canvas-view">
+            <div id="mermaid-container" class="mermaid-container">
+              <div class="canvas-placeholder">
+                <i class="fa-solid fa-diagram-project placeholder-icon"></i>
+                <p>Genera un diagrama Mermaid en el chat para renderizarlo interactivamente aquí.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: Code Diff & File Inspector -->
+          <div id="canvas-view-diff" class="canvas-view">
+            <div id="file-inspector-container" class="file-inspector-container">
+              <div class="file-selector-bar">
+                <input type="text" id="inspect-file-path" placeholder="Ruta del archivo (ej. server.js)..." />
+                <button class="warm-btn sm touch-target" onclick="inspectFileContent()"><i class="fa-solid fa-file-export"></i> Cargar</button>
+              </div>
+              <div id="file-content-view" class="file-content-view">
+                <div class="canvas-placeholder">
+                  <i class="fa-solid fa-file-code placeholder-icon"></i>
+                  <p>Inspecciona cambios recientes de código o archivos del proyecto.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: Live Interactive Terminal & stdin Control -->
+          <div id="canvas-view-terminal" class="canvas-view">
+            <div class="terminal-studio">
+              <div id="terminal-stdout-log" class="terminal-stdout-log">
+                <div class="term-line system">[ TERMINAL STUDIO ENGINE ONLINE ]</div>
+                <div class="term-line system">[ Esperando ejecuciones de comandos... ]</div>
+              </div>
+              <div class="terminal-stdin-bar">
+                <span class="prompt-prefix">stdin&gt;</span>
+                <input type="text" id="terminal-stdin-input" placeholder="Enviar entrada por stdin..." />
+                <button id="terminal-send-btn" class="warm-btn sm touch-target" onclick="sendTerminalStdin()"><i class="fa-solid fa-paper-plane"></i></button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Subagents & Tasks Drawer (Right) -->
+      <aside id="tasks-drawer" class="tasks-drawer collapsed">
+        <div class="drawer-header">
+          <h3><i class="fa-solid fa-diagram-project"></i> Subagentes & Procesos</h3>
+          <button id="close-tasks-drawer-btn" class="warm-btn sm icon-only touch-target"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="drawer-content">
+          <div class="tasks-section">
+            <div class="section-label">Subagentes Activos</div>
+            <div id="active-subagents-list" class="tasks-list">
+              <div class="empty-tasks">No hay subagentes secundarios activos.</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="tasks-section">
+            <div class="section-label">Tareas en Segundo Plano</div>
+            <div id="active-tasks-list" class="tasks-list">
+              <div class="empty-tasks">No hay comandos de consola corriendo.</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Gemini 3 Flash Live Continuous Voice Studio Overlay -->
+  <div id="voice-overlay" class="voice-overlay hidden">
+    <div class="voice-card">
+      <div class="orb-warm-container">
+        <div class="orb-warm-glow"></div>
+        <div class="orb-warm-core" id="voice-orb">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+        <div class="wave-equalizer" id="wave-equalizer">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+      </div>
+
+      <h2 id="voice-status-title">Gemini 3 Flash Live</h2>
+      <p id="voice-status-sub">Modo de Voz Continuo Activo. Habla con tranquilidad y Antigravity responderá en voz alta.</p>
+
+      <div class="voice-transcript-card">
+        <div id="voice-user-transcript" class="user-transcript">Escuchando...</div>
+        <div id="voice-ai-transcript" class="ai-transcript">Esperando voz...</div>
+      </div>
+
+      <div class="voice-controls">
+        <button id="voice-overlay-mic-toggle" class="voice-ctrl-btn active touch-target" title="Micrófono">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
+
+        <button id="close-voice-overlay-btn" class="voice-ctrl-btn stop touch-target" title="Salir del Modo Voz">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <button id="voice-overlay-speaker-toggle" class="voice-ctrl-btn active touch-target" title="Altavoz">
+          <i class="fa-solid fa-volume-high"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR & Network Access Modal -->
+  <div id="qr-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="drawer-header">
+        <h3><i class="fa-solid fa-network-wired"></i> Conexión Local Wi-Fi</h3>
+        <button id="close-qr-modal" class="warm-btn sm icon-only touch-target"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p>Abre Chrome o Brave en tu teléfono e ingresa a cualquiera de estas direcciones:</p>
+        <div id="ip-list-container" class="ip-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
