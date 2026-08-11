@@ -27,6 +27,9 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Drawer Backdrop Blur Mask -->
+  <div id="drawer-backdrop" class="drawer-backdrop hidden"></div>
+
   <div class="app-container">
 
     <!-- Top Studio Navbar -->
@@ -59,6 +62,11 @@
       </div>
 
       <div class="navbar-actions">
+        <!-- Chat History Button -->
+        <button id="history-drawer-btn" class="warm-btn icon-only touch-target" title="Historial de Conversaciones">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </button>
+
         <!-- Canvas Toggle Button -->
         <button id="toggle-canvas-btn" class="warm-btn touch-target" title="Abrir/Cerrar El Canvas Vivo">
           <i class="fa-solid fa-table-columns"></i> <span class="hide-mobile">Canvas Vivo</span>
@@ -71,12 +79,12 @@
         </button>
 
         <!-- Network Access Modal Button -->
-        <button id="qr-modal-btn" class="warm-btn icon-only touch-target" title="Conexión Móvil / QR">
+        <button id="qr-modal-btn" class="warm-btn icon-only touch-target hide-mobile" title="Conexión Móvil / QR">
           <i class="fa-solid fa-qrcode"></i>
         </button>
 
         <!-- Clear Chat Button -->
-        <button id="clear-chat-btn" class="warm-btn danger icon-only touch-target" title="Limpiar consola">
+        <button id="clear-chat-btn" class="warm-btn danger icon-only touch-target hide-mobile" title="Limpiar consola">
           <i class="fa-solid fa-trash-can"></i>
         </button>
       </div>
@@ -88,7 +96,7 @@
         <i class="fa-solid fa-comments"></i> Consola
       </button>
       <button id="mobile-tab-canvas" class="mobile-switch-btn" onclick="switchMobileView('canvas')">
-        <i class="fa-solid fa-palette"></i> Canvas Vivo
+        <i class="fa-solid fa-palette"></i> Canvas
       </button>
       <button id="mobile-tab-tools" class="mobile-switch-btn" onclick="switchMobileView('tools')">
         <i class="fa-solid fa-sliders"></i> Herramientas
@@ -159,10 +167,10 @@
           <!-- Clean Minimalist Welcome Banner -->
           <div id="welcome-hero" class="welcome-hero">
             <div class="hero-badge">
-              <i class="fa-solid fa-sparkles"></i> GEMINI 3 FLASH LIVE
+              <i class="fa-solid fa-bolt"></i> GEMINI 3 FLASH LIVE
             </div>
             <h2>Antigravity Studio</h2>
-            <p class="hero-subtitle">¿En qué puedo ayudarte hoy?</p>
+            <p class="hero-subtitle">¿En qué puedo ayudarte hoy? Usa '/' para autocompletar comandos.</p>
 
             <div class="hero-suggestions">
               <button class="suggestion-chip touch-target" onclick="sendPresetPrompt('Construye una pagina web interactiva HTML/CSS/JS con un temporizador Pomodoro')">
@@ -188,37 +196,47 @@
           <!-- Skill Quick-Triggers Bar Deck -->
           <div class="skill-triggers-deck">
             <button class="trigger-pill touch-target" onclick="sendQuickTrigger('captura')">
-              <i class="fa-solid fa-camera"></i> [Captura Android]
+              <i class="fa-solid fa-camera"></i> Captura Android
             </button>
             <button class="trigger-pill touch-target" onclick="sendQuickTrigger('clip')">
-              <i class="fa-solid fa-clipboard"></i> [Portapapeles]
+              <i class="fa-solid fa-clipboard"></i> Portapapeles
             </button>
             <button class="trigger-pill touch-target" onclick="sendQuickTrigger('frontend-design')">
-              <i class="fa-solid fa-palette"></i> [Frontend Design]
+              <i class="fa-solid fa-palette"></i> Frontend Design
             </button>
             <button class="trigger-pill touch-target" onclick="sendQuickTrigger('subagents')">
-              <i class="fa-solid fa-network-wired"></i> [Subagentes Paralelos]
+              <i class="fa-solid fa-network-wired"></i> Subagentes Paralelos
             </button>
           </div>
 
-          <div class="input-warm-container">
-            <!-- Voice Dictation Button -->
-            <button id="mic-btn" class="input-action-btn mic touch-target" title="Dictar por micrófono">
-              <i class="fa-solid fa-microphone"></i>
-            </button>
+          <div class="input-warm-wrapper">
+            <!-- Autocomplete Popover for '/' Command Trigger -->
+            <div id="commands-popover" class="commands-popover hidden">
+              <div class="popover-header">
+                <i class="fa-solid fa-terminal"></i> COMANDOS & SKILLS (Escribe para filtrar)
+              </div>
+              <div id="commands-list" class="commands-list"></div>
+            </div>
 
-            <!-- Textarea Prompt Input -->
-            <textarea id="prompt-input" placeholder="Escribe tu consulta o instrucción..." rows="1"></textarea>
+            <div class="input-warm-container">
+              <!-- Voice Dictation Button -->
+              <button id="mic-btn" class="input-action-btn mic touch-target" title="Dictar por micrófono">
+                <i class="fa-solid fa-microphone"></i>
+              </button>
 
-            <!-- Send Action Button -->
-            <button id="send-btn" class="input-action-btn send touch-target" title="Enviar instrucción">
-              <span>Enviar</span> <i class="fa-solid fa-paper-plane"></i>
-            </button>
+              <!-- Textarea Prompt Input -->
+              <textarea id="prompt-input" placeholder="Escribe consulta o '/' para comandos..." rows="1"></textarea>
+
+              <!-- Send Action Button -->
+              <button id="send-btn" class="input-action-btn send touch-target" title="Enviar instrucción">
+                <span>Enviar</span> <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
           </div>
 
           <div class="input-footer-note">
             <span><i class="fa-solid fa-shield"></i> Permisos Activos</span>
-            <span><i class="fa-solid fa-bolt"></i> Gemini 3 Flash Live API</span>
+            <span><i class="fa-solid fa-bolt"></i> Gemini 3 Flash Live</span>
             <span><i class="fa-solid fa-wifi"></i> SSE Stream</span>
           </div>
         </footer>
@@ -334,6 +352,23 @@
             <div class="section-label">Tareas en Segundo Plano</div>
             <div id="active-tasks-list" class="tasks-list">
               <div class="empty-tasks">No hay comandos de consola corriendo.</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Chat History Drawer (New) -->
+      <aside id="history-drawer" class="sidebar collapsed">
+        <div class="drawer-header">
+          <h3><i class="fa-solid fa-clock-rotate-left"></i> Historial de Chats</h3>
+          <button id="close-history-drawer-btn" class="warm-btn sm icon-only touch-target"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="drawer-content">
+          <div id="history-list" class="skills-grid">
+            <div class="skill-card">
+              <div class="skill-title"><i class="fa-solid fa-message"></i> Sesión Actual</div>
+              <div class="skill-desc">Chat activo en tiempo real</div>
             </div>
           </div>
         </div>
