@@ -4,48 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Antigravity Studio | Gemini 3 Flash Live</title>
-
+  
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  
   <!-- Highlight.js Theme -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/panda-syntax-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-
+  
   <!-- Marked.js Markdown Engine -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
+  
   <!-- Mermaid.js for Diagram Rendering -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-
+  
   <!-- Application Custom Styles -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Drawer Backdrop Blur Mask -->
+  <!-- Drawer Backdrop Blur Overlay -->
   <div id="drawer-backdrop" class="drawer-backdrop hidden"></div>
 
   <div class="app-container">
-
     <!-- Top Studio Navbar -->
     <header class="navbar">
       <div class="navbar-left">
-        <button id="toggle-sidebar-btn" class="warm-btn touch-target" title="Panel de Habilidades">
-          <i class="fa-solid fa-box-archive"></i> <span class="hide-mobile">Habilidades</span>
+        <button id="toggle-sidebar-btn" class="warm-btn sm touch-target" title="Panel de Habilidades">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M20 3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H4V5h16v14zM6 7h12v2H6zm0 4h12v2H6zm0 4h8v2H6z"/></svg>
+          <span class="hide-mobile">Habilidades</span>
         </button>
-
         <div class="brand">
           <div class="logo-icon">
-            <i class="fa-solid fa-bolt"></i>
+            <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M11 15H6l7-14v8h5l-7 14v-8z"/></svg>
           </div>
           <div class="brand-text">
-            <span class="brand-name">Antigravity <span class="badge-tag">3 FLASH LIVE</span></span>
-            <span class="brand-status" id="server-status-pill">
+            <span class="brand-name">Antigravity <span class="badge-tag hide-mobile">STUDIO</span></span>
+            <span class="brand-status hide-mobile" id="server-status-pill">
               <span class="status-dot online"></span>
               <span id="model-name-text">Gemini 3 Flash Live</span>
             </span>
@@ -53,107 +49,101 @@
         </div>
       </div>
 
-      <!-- Subagent HUD Cluster Widget -->
+      <!-- Subagent HUD Cluster Widget (Desktop) -->
       <div id="subagent-hud-cluster" class="subagent-hud-cluster hide-mobile">
-        <div class="hud-title"><i class="fa-solid fa-microchip"></i> CORES:</div>
+        <div class="hud-title">
+          <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M15 9H9v6h6V9zm-2 4h-2v-2h2v2zm8-2V9h-2V7c0-1.1-.9-2-2-2h-2V3h-2v2h-2V3H9v2H7c-1.1 0-2 .9-2 2v2H3v2h2v2H3v2h2v2c0 1.1.9 2 2 2h2v2h2v-2h2v2h2v-2h2c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2zm-4 6H7V7h10v10z"/></svg>
+          CORES:
+        </div>
         <div id="subagent-cores-container" class="cores-container">
           <div class="core-node idle"><span class="core-dot"></span> Core_01 [IDLE]</div>
         </div>
       </div>
 
       <div class="navbar-actions">
+        <!-- New Chat Button -->
+        <button id="new-chat-btn" class="warm-btn sm highlight touch-target" title="Iniciar Nuevo Chat">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          <span class="hide-mobile">Nuevo Chat</span>
+        </button>
         <!-- Chat History Button -->
-        <button id="history-drawer-btn" class="warm-btn icon-only touch-target" title="Historial de Conversaciones">
-          <i class="fa-solid fa-clock-rotate-left"></i>
+        <button id="history-drawer-btn" class="warm-btn sm icon-only touch-target" title="Historial de Conversaciones">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 1 1 7 7 7.07 7.07 0 0 1-6-3.41L5.54 17A9 9 0 1 0 13 3zm-1 5v6l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
         </button>
-
-        <!-- Canvas Toggle Button -->
-        <button id="toggle-canvas-btn" class="warm-btn touch-target" title="Abrir/Cerrar El Canvas Vivo">
-          <i class="fa-solid fa-table-columns"></i> <span class="hide-mobile">Canvas Vivo</span>
+        <!-- Subagent Tasks Drawer Button -->
+        <button id="subagent-drawer-btn" class="warm-btn sm icon-only touch-target" title="Subagentes & Tareas">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          <span id="subagent-badge" class="badge-count hidden">0</span>
         </button>
-
         <!-- Gemini 3 Flash Live Voice Mode -->
-        <button id="voice-mode-btn" class="voice-pill-btn touch-target" title="Activar Gemini 3 Flash Live Mode">
-          <i class="fa-solid fa-headset"></i>
-          <span class="hide-mobile">Gemini 3 Flash Live</span>
+        <button id="voice-mode-btn" class="voice-pill-btn sm touch-target" title="Activar Gemini 3 Flash Live Mode">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/></svg>
+          <span class="hide-mobile">Gemini Live</span>
         </button>
-
+        <!-- Canvas Toggle Button (Desktop) -->
+        <button id="toggle-canvas-btn" class="warm-btn sm touch-target hide-mobile" title="Abrir/Cerrar Canvas">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h18v18H3V3zm16 16V5H5v14h14zM7 7h4v10H7V7zm6 0h4v4h-4V7zm0 6h4v4h-4v-4z"/></svg>
+          <span class="hide-mobile">Canvas</span>
+        </button>
         <!-- Network Access Modal Button -->
-        <button id="qr-modal-btn" class="warm-btn icon-only touch-target hide-mobile" title="Conexión Móvil / QR">
-          <i class="fa-solid fa-qrcode"></i>
-        </button>
-
-        <!-- Clear Chat Button -->
-        <button id="clear-chat-btn" class="warm-btn danger icon-only touch-target hide-mobile" title="Limpiar consola">
-          <i class="fa-solid fa-trash-can"></i>
+        <button id="qr-modal-btn" class="warm-btn sm icon-only touch-target hide-mobile" title="Conexión Móvil / QR">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 11h8V3H3v8zm2-6h4v4H5V5zm8-2v8h8V3h-8zm6 6h-4V5h4v4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm13-2h-2v2h2v-2zm-3 2h-2v2h2v-2zm3 2h-2v2h2v-2zm2-2h2v2h-2v-2zm0 4h2v2h-2v-2z"/></svg>
         </button>
       </div>
     </header>
 
-    <!-- Mobile Viewport Switcher Bar -->
-    <div class="mobile-viewport-switcher show-mobile">
-      <button id="mobile-tab-chat" class="mobile-switch-btn active" onclick="switchMobileView('chat')">
-        <i class="fa-solid fa-comments"></i> Consola
-      </button>
-      <button id="mobile-tab-canvas" class="mobile-switch-btn" onclick="switchMobileView('canvas')">
-        <i class="fa-solid fa-palette"></i> Canvas
-      </button>
-      <button id="mobile-tab-tools" class="mobile-switch-btn" onclick="switchMobileView('tools')">
-        <i class="fa-solid fa-sliders"></i> Herramientas
-      </button>
-    </div>
-
-    <!-- Workspace Layout (Starts CLOSED by default) -->
+    <!-- Split Workspace Layout -->
     <div id="split-workspace" class="split-workspace">
-
       <!-- LEFT PANEL: Chat, Consola & Telemetría -->
       <section id="chat-panel" class="workspace-panel chat-panel active-mobile-view">
         
         <!-- Sidebar Drawer (Skills & Settings) -->
         <aside id="sidebar" class="sidebar collapsed">
           <div class="drawer-header">
-            <h3><i class="fa-solid fa-box-archive"></i> Registro de Habilidades</h3>
-            <button id="close-sidebar-btn" class="warm-btn sm icon-only touch-target"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="sidebar-title">
+              <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M20 3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H4V5h16v14zM6 7h12v2H6zm0 4h12v2H6zm0 4h8v2H6z"/></svg>
+              Habilidades & Ajustes
+            </h3>
+            <button id="close-sidebar-btn" class="warm-btn sm icon-only touch-target">
+              <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
           </div>
-
-          <div class="drawer-content">
-            <div class="search-box">
-              <i class="fa-solid fa-magnifying-glass search-icon"></i>
-              <input type="text" id="skills-filter-input" placeholder="Buscar habilidades..." />
-            </div>
-
-            <div class="skills-section">
-              <div class="section-label">Habilidades disponibles (.agents/skills)</div>
-              <div id="skills-list" class="skills-grid">
-                <div class="skill-skeleton"><i class="fa-solid fa-spinner fa-spin"></i> Cargando habilidades...</div>
+          <div class="drawer-content" id="sidebar-drawer-content">
+            <div id="skills-section-block">
+              <div class="search-box">
+                <svg class="search-icon svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" id="skills-filter-input" placeholder="Buscar habilidades..." />
               </div>
+              <div class="skills-section">
+                <div class="section-label">Habilidades disponibles (.agents/skills)</div>
+                <div id="skills-list" class="skills-grid">
+                  <div class="skill-skeleton">Cargando habilidades...</div>
+                </div>
+              </div>
+              <div class="divider"></div>
             </div>
-
-            <div class="divider"></div>
-
-            <div class="settings-section">
-              <h3><i class="fa-solid fa-sliders"></i> Preferencias del Estudio</h3>
-
+            <div class="settings-section" id="settings-section-block">
+              <h3>
+                <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/></svg>
+                Preferencias del Estudio
+              </h3>
               <label class="toggle-control touch-target">
-                <span><i class="fa-solid fa-volume-low"></i> Lectura por voz (TTS)</span>
+                <span>Lectura por voz (TTS)</span>
                 <input type="checkbox" id="auto-tts-toggle">
                 <span class="slider"></span>
               </label>
-
               <label class="toggle-control touch-target">
-                <span><i class="fa-solid fa-arrow-down-short-wide"></i> Auto-scroll en consola</span>
+                <span>Auto-scroll en consola</span>
                 <input type="checkbox" id="auto-scroll-toggle" checked>
                 <span class="slider"></span>
               </label>
-
               <label class="toggle-control touch-target">
-                <span><i class="fa-solid fa-brain"></i> Expandir razonamiento</span>
+                <span>Expandir razonamiento</span>
                 <input type="checkbox" id="expand-thinking-toggle">
                 <span class="slider"></span>
               </label>
-
               <label class="toggle-control touch-target">
-                <span><i class="fa-solid fa-bell"></i> Sonidos de estado</span>
+                <span>Sonidos de estado</span>
                 <input type="checkbox" id="sound-fx-toggle" checked>
                 <span class="slider"></span>
               </label>
@@ -163,125 +153,198 @@
 
         <!-- Chat Output Messages Stream -->
         <div id="chat-messages" class="chat-messages">
-
           <!-- Clean Minimalist Welcome Banner -->
           <div id="welcome-hero" class="welcome-hero">
             <div class="hero-badge">
-              <i class="fa-solid fa-bolt"></i> GEMINI 3 FLASH LIVE
+              <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M11 15H6l7-14v8h5l-7 14v-8z"/></svg>
+              GEMINI 3 FLASH LIVE
             </div>
             <h2>Antigravity Studio</h2>
-            <p class="hero-subtitle">¿En qué puedo ayudarte hoy? Usa '/' para autocompletar comandos.</p>
-
+            <p class="hero-subtitle">¿En qué puedo ayudarte hoy? Selecciona una herramienta o escribe tu consulta.</p>
             <div class="hero-suggestions">
-              <button class="suggestion-chip touch-target" onclick="sendPresetPrompt('Construye una pagina web interactiva HTML/CSS/JS con un temporizador Pomodoro')">
-                <i class="fa-solid fa-code"></i> Crear App Web
+              <button class="suggestion-chip touch-target" onclick="selectToolAttachment('web_app')">
+                <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+                Crear App Web
               </button>
-              <button class="suggestion-chip touch-target" onclick="sendPresetPrompt('Crea un diagrama Mermaid sobre la arquitectura del proyecto')">
-                <i class="fa-solid fa-diagram-project"></i> Diagrama Mermaid
+              <button class="suggestion-chip touch-target" onclick="selectToolAttachment('mermaid')">
+                <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                Diagrama Mermaid
               </button>
-              <button class="suggestion-chip touch-target" onclick="sendPresetPrompt('Invoca subagentes en paralelo para auditar el proyecto')">
-                <i class="fa-solid fa-sitemap"></i> Subagentes
+              <button class="suggestion-chip touch-target" onclick="selectToolAttachment('subagents')">
+                <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                Subagentes
               </button>
-              <button class="suggestion-chip touch-target" onclick="sendPresetPrompt('Inspecciona los archivos del proyecto actual')">
-                <i class="fa-solid fa-folder-tree"></i> Auditar Proyecto
+              <button class="suggestion-chip touch-target" onclick="selectToolAttachment('audit')">
+                <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+                Auditar Proyecto
               </button>
             </div>
           </div>
-
         </div>
 
-        <!-- Input Section with Quick Skill Triggers Deck -->
+        <!-- Input Area with Gemini-Style Tool Selection -->
         <footer class="chat-input-area">
-          
-          <!-- Skill Quick-Triggers Bar Deck -->
-          <div class="skill-triggers-deck">
-            <button class="trigger-pill touch-target" onclick="sendQuickTrigger('captura')">
-              <i class="fa-solid fa-camera"></i> Captura Android
-            </button>
-            <button class="trigger-pill touch-target" onclick="sendQuickTrigger('clip')">
-              <i class="fa-solid fa-clipboard"></i> Portapapeles
-            </button>
-            <button class="trigger-pill touch-target" onclick="sendQuickTrigger('frontend-design')">
-              <i class="fa-solid fa-palette"></i> Frontend Design
-            </button>
-            <button class="trigger-pill touch-target" onclick="sendQuickTrigger('subagents')">
-              <i class="fa-solid fa-network-wired"></i> Subagentes Paralelos
-            </button>
-          </div>
-
           <div class="input-warm-wrapper">
+            
+            <!-- Gemini-Style '+' Action Menu Popover -->
+            <div id="action-menu-popover" class="action-menu-popover hidden">
+              <div class="action-menu-header">
+                <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M11 15H6l7-14v8h5l-7 14v-8z"/></svg>
+                Herramientas & Habilidades (Seleccionar)
+              </div>
+              <div class="action-menu-grid">
+                <button class="action-item touch-target" onclick="selectToolAttachment('captura')">
+                  <div class="action-icon camera">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                  </div>
+                  <div class="action-info">
+                    <span class="action-title">Captura Android</span>
+                    <span class="action-desc">Analizar pantalla actual</span>
+                  </div>
+                </button>
+                <button class="action-item touch-target" onclick="selectToolAttachment('clip')">
+                  <div class="action-icon clipboard">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2 .84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 16H5V5h2v2h10V5h2v14z"/></svg>
+                  </div>
+                  <div class="action-info">
+                    <span class="action-title">Portapapeles</span>
+                    <span class="action-desc">Leer texto copiado</span>
+                  </div>
+                </button>
+                <button class="action-item touch-target" onclick="selectToolAttachment('frontend_design')">
+                  <div class="action-icon palette">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.3c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.9-1.9C9.22 19.53 10.57 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+                  </div>
+                  <div class="action-info">
+                    <span class="action-title">Frontend Design</span>
+                    <span class="action-desc">Activar guía de diseño</span>
+                  </div>
+                </button>
+                <button class="action-item touch-target" onclick="selectToolAttachment('subagents')">
+                  <div class="action-icon network">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                  </div>
+                  <div class="action-info">
+                    <span class="action-title">Subagentes</span>
+                    <span class="action-desc">Procesar en paralelo</span>
+                  </div>
+                </button>
+                <button class="action-item touch-target" onclick="selectToolAttachment('web_app')">
+                  <div class="action-icon web">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                  </div>
+                  <div class="action-info">
+                    <span class="action-title">Crear App Web</span>
+                    <span class="action-desc">Generar interfaz en vivo</span>
+                  </div>
+                </button>
+                <button class="action-item touch-target" onclick="selectToolAttachment('mermaid')">
+                  <div class="action-icon diagram">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 4h2v6h-2z"/></svg>
+                  </div>
+                  <div class="action-info">
+                    <span class="action-title">Diagrama Mermaid</span>
+                    <span class="action-desc">Visualizar flujos de datos</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
             <!-- Autocomplete Popover for '/' Command Trigger -->
             <div id="commands-popover" class="commands-popover hidden">
               <div class="popover-header">
-                <i class="fa-solid fa-terminal"></i> COMANDOS & SKILLS (Escribe para filtrar)
+                <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14E11 18H9v-2h2v2zm0-3h-2v-2h2v2zm0-3h-2V9h2v2zm4 6h-2v-2h2v2zm0-3h-2v-2h2v2zm0-3h-2V9h2v2z"/></svg>
+                COMANDOS & SKILLS (Usa ↑ ↓ Enter para navegar)
               </div>
               <div id="commands-list" class="commands-list"></div>
             </div>
 
+            <!-- Active Selected Tool Tag Attachment Container -->
+            <div id="active-tool-container" class="active-tool-container hidden">
+              <div id="active-tool-tag" class="active-tool-tag">
+                <span id="active-tool-icon" class="tool-tag-icon"></span>
+                <span id="active-tool-label" class="tool-tag-label"></span>
+                <button type="button" class="tool-tag-remove" onclick="removeSelectedTool()" title="Quitar herramienta">&times;</button>
+              </div>
+            </div>
+
+            <!-- Clean Floating Warm Container -->
             <div class="input-warm-container">
+              <!-- Gemini-Style Plus Button -->
+              <button id="plus-btn" class="input-action-btn plus-btn touch-target" title="Herramientas rápidas">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              </button>
               <!-- Voice Dictation Button -->
               <button id="mic-btn" class="input-action-btn mic touch-target" title="Dictar por micrófono">
-                <i class="fa-solid fa-microphone"></i>
+                <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
               </button>
-
               <!-- Textarea Prompt Input -->
               <textarea id="prompt-input" placeholder="Escribe consulta o '/' para comandos..." rows="1"></textarea>
-
               <!-- Send Action Button -->
               <button id="send-btn" class="input-action-btn send touch-target" title="Enviar instrucción">
-                <span>Enviar</span> <i class="fa-solid fa-paper-plane"></i>
+                <span class="hide-mobile">Enviar</span>
+                <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
               </button>
             </div>
           </div>
 
-          <div class="input-footer-note">
-            <span><i class="fa-solid fa-shield"></i> Permisos Activos</span>
-            <span><i class="fa-solid fa-bolt"></i> Gemini 3 Flash Live</span>
-            <span><i class="fa-solid fa-wifi"></i> SSE Stream</span>
+          <div class="input-footer-note hide-mobile">
+            <span>Permisos Activos</span>
+            <span>•</span>
+            <span>Gemini 3 Flash Live</span>
+            <span>•</span>
+            <span>SSE Stream</span>
           </div>
         </footer>
       </section>
 
-      <!-- SPLITTER RESIZER BAR -->
+      <!-- SPLITTER RESIZER BAR (Desktop) -->
       <div id="split-resizer" class="split-resizer hide-mobile" title="Arrastrar para ajustar tamaño">
         <div class="resizer-handle"></div>
       </div>
 
-      <!-- RIGHT PANEL: EL CANVAS VIVO INTERACTIVO (Inicia cerrado por defecto) -->
+      <!-- RIGHT PANEL: EL CANVAS VIVO INTERACTIVO -->
       <section id="canvas-panel" class="workspace-panel canvas-panel">
-        
         <!-- Canvas Tabs Navigation Header -->
         <div class="canvas-header">
           <div class="canvas-tabs">
             <button id="tab-btn-iframe" class="canvas-tab active touch-target" onclick="switchCanvasTab('iframe')">
-              <i class="fa-solid fa-globe"></i> <span>Web Sandbox</span>
+              <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              <span>Web Sandbox</span>
             </button>
             <button id="tab-btn-mermaid" class="canvas-tab touch-target" onclick="switchCanvasTab('mermaid')">
-              <i class="fa-solid fa-diagram-project"></i> <span>Mermaid</span>
+              <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 4h2v6h-2z"/></svg>
+              <span>Mermaid</span>
             </button>
             <button id="tab-btn-diff" class="canvas-tab touch-target" onclick="switchCanvasTab('diff')">
-              <i class="fa-solid fa-file-code"></i> <span>Archivos</span>
+              <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+              <span>Archivos</span>
             </button>
             <button id="tab-btn-terminal" class="canvas-tab touch-target" onclick="switchCanvasTab('terminal')">
-              <i class="fa-solid fa-terminal"></i> <span>Terminal</span>
+              <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14E11 18H9v-2h2v2zm0-3h-2v-2h2v2zm0-3h-2V9h2v2zm4 6h-2v-2h2v2zm0-3h-2v-2h2v2zm0-3h-2V9h2v2z"/></svg>
+              <span>Terminal</span>
             </button>
           </div>
-
           <div class="canvas-actions">
             <button class="warm-btn sm touch-target" onclick="refreshIframeSandbox()" title="Recargar App Web">
-              <i class="fa-solid fa-rotate-right"></i>
+              <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
             </button>
             <button class="warm-btn sm icon-only touch-target" onclick="toggleCanvasPanel()" title="Cerrar Canvas">
-              <i class="fa-solid fa-xmark"></i>
+              <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
             </button>
           </div>
         </div>
 
         <!-- Canvas Body Views Container -->
         <div class="canvas-body">
-
           <!-- TAB 1: Iframe Sandbox (Live Web Preview) -->
           <div id="canvas-view-iframe" class="canvas-view active">
+            <div class="viewport-toolbar">
+              <span class="viewport-label">Resolución:</span>
+              <button class="warm-btn sm touch-target" onclick="setIframeViewport('375px')">375px</button>
+              <button class="warm-btn sm touch-target" onclick="setIframeViewport('768px')">768px</button>
+              <button class="warm-btn sm touch-target" onclick="setIframeViewport('100%')">100%</button>
+            </div>
             <div class="iframe-container">
               <iframe id="sandbox-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
             </div>
@@ -291,7 +354,6 @@
           <div id="canvas-view-mermaid" class="canvas-view">
             <div id="mermaid-container" class="mermaid-container">
               <div class="canvas-placeholder">
-                <i class="fa-solid fa-diagram-project placeholder-icon"></i>
                 <p>Genera un diagrama Mermaid en el chat para renderizarlo interactivamente aquí.</p>
               </div>
             </div>
@@ -302,12 +364,13 @@
             <div id="file-inspector-container" class="file-inspector-container">
               <div class="file-selector-bar">
                 <input type="text" id="inspect-file-path" placeholder="Ruta del archivo (ej. server.js)..." />
-                <button class="warm-btn sm touch-target" onclick="inspectFileContent()"><i class="fa-solid fa-file-export"></i> Cargar</button>
+                <button class="warm-btn sm touch-target" onclick="inspectFileContent()">Cargar</button>
+                <button class="warm-btn sm touch-target" onclick="loadFileTree()">Árbol</button>
               </div>
+              <div id="file-tree-container" class="file-tree-container hidden"></div>
               <div id="file-content-view" class="file-content-view">
                 <div class="canvas-placeholder">
-                  <i class="fa-solid fa-file-code placeholder-icon"></i>
-                  <p>Inspecciona cambios recientes de código o archivos del proyecto.</p>
+                  <p>Inspecciona cambios recientes de código o explora el árbol de archivos del proyecto.</p>
                 </div>
               </div>
             </div>
@@ -323,21 +386,26 @@
               <div class="terminal-stdin-bar">
                 <span class="prompt-prefix">stdin&gt;</span>
                 <input type="text" id="terminal-stdin-input" placeholder="Enviar entrada por stdin..." />
-                <button id="terminal-send-btn" class="warm-btn sm touch-target" onclick="sendTerminalStdin()"><i class="fa-solid fa-paper-plane"></i></button>
+                <button id="terminal-send-btn" class="warm-btn sm touch-target" onclick="sendTerminalStdin()">
+                  <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </button>
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
       <!-- Subagents & Tasks Drawer (Right) -->
       <aside id="tasks-drawer" class="tasks-drawer collapsed">
         <div class="drawer-header">
-          <h3><i class="fa-solid fa-diagram-project"></i> Subagentes & Procesos</h3>
-          <button id="close-tasks-drawer-btn" class="warm-btn sm icon-only touch-target"><i class="fa-solid fa-xmark"></i></button>
+          <h3>
+            <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            Subagentes & Procesos
+          </h3>
+          <button id="close-tasks-drawer-btn" class="warm-btn sm icon-only touch-target">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          </button>
         </div>
-
         <div class="drawer-content">
           <div class="tasks-section">
             <div class="section-label">Subagentes Activos</div>
@@ -345,9 +413,7 @@
               <div class="empty-tasks">No hay subagentes secundarios activos.</div>
             </div>
           </div>
-
           <div class="divider"></div>
-
           <div class="tasks-section">
             <div class="section-label">Tareas en Segundo Plano</div>
             <div id="active-tasks-list" class="tasks-list">
@@ -357,25 +423,51 @@
         </div>
       </aside>
 
-      <!-- Chat History Drawer (New) -->
-      <aside id="history-drawer" class="sidebar collapsed">
+      <!-- Chat History Drawer (Right Slide) -->
+      <aside id="history-drawer" class="tasks-drawer history-drawer collapsed">
         <div class="drawer-header">
-          <h3><i class="fa-solid fa-clock-rotate-left"></i> Historial de Chats</h3>
-          <button id="close-history-drawer-btn" class="warm-btn sm icon-only touch-target"><i class="fa-solid fa-xmark"></i></button>
+          <h3>
+            <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 1 1 7 7 7.07 7.07 0 0 1-6-3.41L5.54 17A9 9 0 1 0 13 3zm-1 5v6l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+            Historial de Chats
+          </h3>
+          <div class="drawer-actions-group">
+            <button id="drawer-new-chat-btn" class="warm-btn sm highlight touch-target" title="Iniciar Nuevo Chat">
+              <svg class="svg-icon sm" viewBox="0 0 24 24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              <span>Nuevo</span>
+            </button>
+            <button id="close-history-drawer-btn" class="warm-btn sm icon-only touch-target">
+              <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+          </div>
         </div>
-
         <div class="drawer-content">
           <div id="history-list" class="skills-grid">
-            <div class="skill-card">
-              <div class="skill-title"><i class="fa-solid fa-message"></i> Sesión Actual</div>
-              <div class="skill-desc">Chat activo en tiempo real</div>
-            </div>
+            <div class="skill-skeleton">Cargando historial...</div>
           </div>
         </div>
       </aside>
-
     </div>
   </div>
+
+  <!-- Mobile Viewport Switcher Bottom Dock (Clean 4-Tab Dock) -->
+  <nav class="mobile-viewport-switcher show-mobile">
+    <button id="mobile-tab-chat" class="mobile-switch-btn active" onclick="switchMobileView('chat')">
+      <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+      <span>Consola</span>
+    </button>
+    <button id="mobile-tab-canvas" class="mobile-switch-btn" onclick="switchMobileView('canvas')">
+      <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.3c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.9-1.9C9.22 19.53 10.57 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/></svg>
+      <span>Canvas</span>
+    </button>
+    <button id="mobile-tab-skills" class="mobile-switch-btn" onclick="switchMobileView('skills')">
+      <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M20 3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H4V5h16v14zM6 7h12v2H6zm0 4h12v2H6zm0 4h8v2H6z"/></svg>
+      <span>Habilidades</span>
+    </button>
+    <button id="mobile-tab-tools" class="mobile-switch-btn" onclick="switchMobileView('tools')">
+      <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/></svg>
+      <span>Ajustes</span>
+    </button>
+  </nav>
 
   <!-- Gemini 3 Flash Live Continuous Voice Studio Overlay -->
   <div id="voice-overlay" class="voice-overlay hidden">
@@ -383,33 +475,28 @@
       <div class="orb-warm-container">
         <div class="orb-warm-glow"></div>
         <div class="orb-warm-core" id="voice-orb">
-          <i class="fa-solid fa-bolt"></i>
+          <svg class="svg-icon lg" viewBox="0 0 24 24"><path fill="currentColor" d="M11 15H6l7-14v8h5l-7 14v-8z"/></svg>
         </div>
         <div class="wave-equalizer" id="wave-equalizer">
           <span class="bar"></span><span class="bar"></span><span class="bar"></span>
           <span class="bar"></span><span class="bar"></span><span class="bar"></span>
         </div>
       </div>
-
       <h2 id="voice-status-title">Gemini 3 Flash Live</h2>
       <p id="voice-status-sub">Modo de Voz Continuo Activo. Habla con tranquilidad y Antigravity responderá en voz alta.</p>
-
       <div class="voice-transcript-card">
         <div id="voice-user-transcript" class="user-transcript">Escuchando...</div>
         <div id="voice-ai-transcript" class="ai-transcript">Esperando voz...</div>
       </div>
-
       <div class="voice-controls">
         <button id="voice-overlay-mic-toggle" class="voice-ctrl-btn active touch-target" title="Micrófono">
-          <i class="fa-solid fa-microphone"></i>
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
         </button>
-
         <button id="close-voice-overlay-btn" class="voice-ctrl-btn stop touch-target" title="Salir del Modo Voz">
-          <i class="fa-solid fa-xmark"></i>
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
-
         <button id="voice-overlay-speaker-toggle" class="voice-ctrl-btn active touch-target" title="Altavoz">
-          <i class="fa-solid fa-volume-high"></i>
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
         </button>
       </div>
     </div>
@@ -419,8 +506,13 @@
   <div id="qr-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="drawer-header">
-        <h3><i class="fa-solid fa-network-wired"></i> Conexión Local Wi-Fi</h3>
-        <button id="close-qr-modal" class="warm-btn sm icon-only touch-target"><i class="fa-solid fa-xmark"></i></button>
+        <h3>
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          Conexión Local Wi-Fi
+        </h3>
+        <button id="close-qr-modal" class="warm-btn sm icon-only touch-target">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
       </div>
       <div class="modal-body">
         <p>Abre Chrome o Brave en tu teléfono e ingresa a cualquiera de estas direcciones:</p>
