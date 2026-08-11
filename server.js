@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Antigravity Agentic Studio - Backend Bridge (server.js)
+   Antigravity Agentic Studio - Backend Bridge (server.js v2.0)
    Node.js Server with SSE Streaming, Gemini 3 Flash Live API & Terminal stdin
    ========================================================================== */
 
@@ -47,7 +47,8 @@ function getSkillsList() {
   const possibleDirs = [
     '/root/.agents/skills',
     path.join(os.homedir(), '.agents', 'skills'),
-    path.join(process.cwd(), '.agents', 'skills')
+    path.join(process.cwd(), '.agents', 'skills'),
+    path.join(__dirname, '..', 'skills')
   ];
 
   const skillsMap = new Map();
@@ -153,7 +154,7 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({
       status: 'online',
       agentEngine: 'Antigravity Studio Engine (agy)',
-      model: 'Gemini 3 Flash Live (Voice Engine)',
+      model: 'Gemini 3 Flash Live',
       localIPs: getLocalIPs(),
       port: PORT,
       os: `${os.type()} ${os.release()} (${os.arch()})`,
@@ -202,6 +203,99 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ error: 'JSON invalido' }));
       }
     });
+    return;
+  }
+
+  // REST API: Get list of saved conversations in brain/
+  if (pathname === '/api/chats' && req.method === 'GET') {
+    const brainDir = path.join(os.homedir(), '.gemini', 'antigravity-cli', 'brain');
+    const chats = [];
+    try {
+      if (fs.existsSync(brainDir)) {
+        const folders = fs.readdirSync(brainDir, { withFileTypes: true });
+        for (const folder of folders) {
+          if (!folder.isDirectory()) continue;
+          const convId = folder.name;
+          const transcriptFile = path.join(brainDir, convId, '.system_generated', 'logs', 'transcript.jsonl');
+          if (fs.existsSync(transcriptFile)) {
+            const stat = fs.statSync(transcriptFile);
+            let firstPrompt = 'Conversación sin título';
+            try {
+              const lines = fs.readFileSync(transcriptFile, 'utf-8').split('\n').filter(Boolean);
+              for (const line of lines) {
+                const step = JSON.parse(line);
+                if (step.type === 'USER_INPUT' && step.content) {
+                  firstPrompt = step.content.replace(/<[^>]+>/g, '').trim().substring(0, 60);
+                  break;
+                }
+              }
+            } catch (e) {}
+            chats.push({
+              id: convId,
+              date: stat.mtime,
+              prompt: firstPrompt
+            });
+          }
+        }
+        chats.sort((a, b) => new Date(b.date) - new Date(a.date));
+      }
+    } catch (err) {
+      console.error('Error cargando historial de chats:', err.message);
+    }
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ chats }));
+    return;
+  }
+
+  // REST API: Get parsed transcript steps for a specific conversation
+  if (pathname === '/api/chats/transcript' && req.method === 'GET') {
+    const convId = parsedUrl.searchParams.get('id');
+    if (!convId) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Parámetro id requerido' }));
+      return;
+    }
+    const transcriptFile = path.join(os.homedir(), '.gemini', 'antigravity-cli', 'brain', convId, '.system_generated', 'logs', 'transcript.jsonl');
+    if (!fs.existsSync(transcriptFile)) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Transcripción no encontrada' }));
+      return;
+    }
+    try {
+      const lines = fs.readFileSync(transcriptFile, 'utf-8').split('\n').filter(Boolean);
+      const steps = lines.map(line => JSON.parse(line));
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ id: convId, steps }));
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: `Error leyendo transcripción: ${e.message}` }));
+    }
+    return;
+  }
+
+  // REST API: File Tree Explorer
+  if (pathname === '/api/tree' && req.method === 'GET') {
+    const targetDir = parsedUrl.searchParams.get('dir') || process.cwd();
+    try {
+      const resolved = path.resolve(targetDir);
+      if (!fs.existsSync(resolved) || !fs.statSync(resolved).isDirectory()) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Directorio inválido' }));
+        return;
+      }
+      const entries = fs.readdirSync(resolved, { withFileTypes: true });
+      const items = entries.map(entry => ({
+        name: entry.name,
+        path: path.join(resolved, entry.name),
+        isDir: entry.isDirectory()
+      })).sort((a, b) => (b.isDir - a.isDir) || a.name.localeCompare(b.name));
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ path: resolved, items }));
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: e.message }));
+    }
     return;
   }
 
@@ -264,7 +358,7 @@ const server = http.createServer((req, res) => {
         '--dangerously-skip-permissions'
       ];
 
-      if (finalConvId) {
+      if (finalConvId && !finalConvId.startsWith('task_')) {
         args.push('--conversation', finalConvId.trim());
       }
 
